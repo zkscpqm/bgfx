@@ -5,18 +5,18 @@
 
 UNAME := $(shell uname)
 ifeq ($(UNAME),$(filter $(UNAME),Linux Darwin))
-ifeq ($(UNAME),$(filter $(UNAME),Darwin))
-OS=darwin
-else
-OS=linux
-endif
+	ifeq ($(UNAME),$(filter $(UNAME),Darwin))
+		OS=darwin
+	else
+	OS=linux
+	endif
 
-help:
-	@echo Available targets:
-	@grep -E "^[a-zA-Z0-9_-]+:.*?## .*$$" $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
-
+	help:
+		@echo Available targets:
+		@grep -E "^[a-zA-Z0-9_-]+:.*?## .*$$" $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 else
-OS=windows
+	export MINGW := C:/msys64/mingw64
+	OS=windows
 
 help: projgen
 
@@ -95,6 +95,7 @@ mingw-gcc-debug64: .build/projects/gmake-mingw-gcc ## Build - MinGW GCC x64 Debu
 mingw-gcc-release64: .build/projects/gmake-mingw-gcc ## Build - MinGW GCC x64 Release
 	$(MAKE) -R -C .build/projects/gmake-mingw-gcc config=release64
 mingw-gcc: mingw-gcc-debug32 mingw-gcc-release32 mingw-gcc-debug64 mingw-gcc-release64 ## Build - MinGW GCC x86/x64 Debug and Release
+mingw-gcc-64: mingw-gcc-debug64 mingw-gcc-release64
 
 .build/projects/gmake-mingw-clang:
 	$(GENIE) --with-tools --with-combined-examples --with-shared-lib --gcc=mingw-clang gmake
